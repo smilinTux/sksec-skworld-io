@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sksec · CrowdSec at the Edge, Before It Reaches Your Apps 🛡️</title>
+  <meta name="description" content="sksec is SKWorld's edge security layer: CrowdSec behavioral detection plus a fail-closed Traefik bouncer, with an SSO-gated dashboard (sksec-web). Crowd-sourced reputation and real behavior signals, not a guess at who or what is on the other end.">
+  <link rel="canonical" href="https://sksec.skworld.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="sksec · CrowdSec at the Edge, Before It Reaches Your Apps">
+  <meta property="og:description" content="Behavioral detection, crowd-sourced reputation, and a fail-closed bouncer in front of every service. Part of the SKWorld sovereign AI ecosystem.">
+  <meta property="og:url" content="https://sksec.skworld.io/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--red:#f6584e;--cyan:#38bdf8;--ink:#eef1f3;--muted:rgba(238,241,243,.72);--panel:rgba(246,88,78,.06);--line:rgba(246,88,78,.30)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(ellipse at top,#1c1012 0%,#0c0607 60%);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:960px;margin:0 auto;padding:0 1.4rem}
+    .mono{font-family:'JetBrains Mono',monospace}
+    .eyebrow{color:var(--red);letter-spacing:.18em;font-size:.8rem;text-transform:uppercase}
+    a{color:var(--cyan);text-decoration:none}
+    a:hover{color:#fff}
+    nav{border-bottom:1px solid rgba(246,88,78,.15);padding:1rem 0}
+    nav .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+    .nav-logo{font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff;font-size:1rem;letter-spacing:.02em}
+    .nav-logo span{color:var(--red)}
+    .nav-links{display:flex;gap:1.2rem;flex-wrap:wrap;font-size:.88rem}
+    .nav-links a{color:var(--muted)}
+    .nav-links a:hover{color:var(--red)}
+    header{text-align:center;padding:4.5rem 0 3rem}
+    .icon{font-size:4rem;line-height:1}
+    h1{font-size:3.2rem;font-weight:800;letter-spacing:.03em;margin:.6rem 0 .2rem;background:linear-gradient(90deg,#fff,var(--red));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .tag{font-size:1.3rem;color:var(--red);font-weight:600;margin-top:.4rem}
+    .sub{color:var(--muted);font-size:1.1rem;max-width:660px;margin:1rem auto 0}
+    .badges{margin:1.8rem 0 0;display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
+    .badge{border:1px solid var(--line);border-radius:999px;padding:.5rem 1.05rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--red);background:var(--panel);transition:all .25s}
+    .badge:hover{border-color:var(--red);color:#fff}
+    section{padding:2.4rem 0;border-top:1px solid rgba(255,255,255,.06)}
+    h2{font-size:1.7rem;color:#fff;margin-bottom:1rem;font-weight:700}
+    h2 .n{color:var(--red);font-family:'JetBrains Mono',monospace;font-size:1.1rem;margin-right:.5rem}
+    p{color:var(--muted);margin-bottom:.9rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin-top:1rem}
+    .card{border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:1.2rem;background:rgba(255,255,255,.02)}
+    .card h3{color:var(--red);font-size:1.05rem;margin-bottom:.4rem}
+    .card p{font-size:.95rem;margin:0}
+    ol.arts{list-style:none;counter-reset:a;margin-top:.6rem}
+    ol.arts li{counter-increment:a;border-left:2px solid var(--line);padding:.2rem 0 1rem 1.2rem;position:relative}
+    ol.arts li::before{content:counter(a);position:absolute;left:-.85rem;top:0;background:var(--red);color:#1c1012;width:1.5rem;height:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.8rem}
+    ol.arts strong{color:#fff}
+    .flow{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--cyan);background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.2);border-radius:12px;padding:1rem 1.2rem;overflow-x:auto;white-space:pre;margin-top:.6rem}
+    table.spec{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.92rem}
+    table.spec th,table.spec td{padding:.6rem .8rem;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+    table.spec th{color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}
+    table.spec td{color:var(--muted)}
+    table.spec td strong{color:#fff}
+    .cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
+    .btn{border:1px solid var(--line);border-radius:10px;padding:.7rem 1.3rem;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--red);background:var(--panel);transition:all .25s}
+    .btn:hover{border-color:var(--red);color:#fff}
+    .btn.bl{border-color:rgba(56,189,248,.35);color:var(--cyan)}
+    .btn.bl:hover{border-color:var(--cyan);color:#fff}
+    .callout{border:1px solid rgba(246,88,78,.45);background:linear-gradient(135deg,rgba(246,88,78,.1),rgba(56,189,248,.05));border-radius:16px;padding:1.6rem 1.8rem;margin-top:1.2rem}
+    .callout h3{color:#fff;font-size:1.15rem;margin-bottom:.6rem}
+    .callout h3 .tag-pill{display:inline-block;background:var(--red);color:#1c1012;font-family:'JetBrains Mono',monospace;font-size:.72rem;padding:.2rem .55rem;border-radius:999px;margin-right:.5rem;vertical-align:middle;letter-spacing:.04em}
+    .callout ul{margin:.6rem 0 0 1.1rem;color:var(--muted)}
+    .callout li{margin-bottom:.5rem}
+    .callout code{color:var(--cyan)}
+    footer{text-align:center;padding:3rem 0 2.5rem;color:rgba(255,255,255,.4);border-top:1px solid rgba(255,255,255,.06);margin-top:1rem}
+    footer .mono{font-size:.82rem}
+    .foot-links{display:flex;gap:1.4rem;flex-wrap:wrap;justify-content:center;margin:1.2rem 0;font-size:.85rem}
+    .foot-links a{color:var(--muted)}
+    .foot-links a:hover{color:var(--red)}
+    @media(max-width:600px){h1{font-size:2.3rem}.icon{font-size:3rem}.nav-links{font-size:.8rem;gap:.8rem}}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="nav-logo" href="/">sk<span>sec</span></a>
+      <div class="nav-links">
+        <a href="#what">What it is</a>
+        <a href="#ai">Fighting AI-speed attacks</a>
+        <a href="#web">sksec-web</a>
+        <a href="https://github.com/smilinTux/skstacks/blob/main/v1/ansible/core/sksec/README.md" target="_blank" rel="noopener">Source</a>
+        <a href="https://skworld.io" target="_blank" rel="noopener">🐧 SKWorld</a>
+      </div>
+    </div>
+  </nav>
+
+  <header>
+    <div class="wrap">
+      <div class="icon">🛡️</div>
+      <div class="mono eyebrow">core/sksec · v1</div>
+      <h1>sksec</h1>
+      <div class="tag">CrowdSec at the edge, before anything reaches your apps.</div>
+      <p class="sub">sksec puts behavioral intrusion detection and crowd-sourced reputation in front of every service behind the fleet's Traefik edge, with a bouncer that fails closed and a dashboard that stays behind single sign-on. It does not guess whether a request is human or machine. It watches what the request does.</p>
+      <div class="badges">
+        <a class="badge" href="#what">📦 What it bundles</a>
+        <a class="badge" href="#why">🔒 Fail-closed by design</a>
+        <a class="badge" href="#ai">🤖 Fighting AI-speed attacks</a>
+        <a class="badge" href="#web">🖥️ sksec-web</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section id="what">
+      <h2>What sksec is</h2>
+      <p>sksec is the core deployment role (<code class="mono">core/sksec</code>) inside <a href="https://github.com/smilinTux/skstacks" target="_blank" rel="noopener">SKStacks</a>, SKWorld's Ansible + Docker Swarm sovereign infrastructure framework. It runs <a href="https://www.crowdsec.net/" target="_blank" rel="noopener">CrowdSec</a>, an open-source behavioral detection engine with a crowd-sourced reputation feed, alongside a Traefik forwardAuth bouncer, so every router in the cluster can be put behind the same decision with one middleware line.</p>
+      <div class="grid">
+        <div class="card"><h3>Behavioral detection</h3><p>CrowdSec tails the edge's own access logs and scores behavior against its scenario collections (<code>crowdsecurity/linux</code>, <code>crowdsecurity/traefik</code> by default), not just a static IP list.</p></div>
+        <div class="card"><h3>Crowd-sourced reputation</h3><p>CrowdSec's community blocklist (CAPI) shares attacker reputation across every participating CrowdSec deployment worldwide, so one site's detection can protect every other site before an attacker ever reaches it.</p></div>
+        <div class="card"><h3>Fail-closed bouncer</h3><p>The Traefik bouncer answers 403 when it cannot reach CrowdSec's LAPI, rather than quietly letting every request through. Run a canary router first, widen only after it checks out.</p></div>
+        <div class="card"><h3>Operator allowlist</h3><p>Your own ranges (LAN, VPN, CI runners, the cluster's own public address) are enforced at both the local parser and CrowdSec's own LAPI, so a community or manual ban can never catch you.</p></div>
+        <div class="card"><h3>High availability</h3><p>Optional bouncer replicas (one per node) mean one node going down never takes the gate down with it. The bouncer itself is stateless.</p></div>
+        <div class="card"><h3>Local-disk LAPI fix</h3><p>CrowdSec's hot-path database can now pin to local disk on one node instead of shared network storage, removing the slow-lookup-to-fail-closed failure mode entirely (see below).</p></div>
+      </div>
+    </section>
+
+    <section id="why">
+      <h2><span class="n">§</span>Why it is built this way</h2>
+      <p>A bouncer that fails closed is only trustworthy if the thing it depends on cannot quietly become the slowest part of the request path. sksec was built, and then fixed, around exactly that failure mode.</p>
+      <ol class="arts">
+        <li><strong>The database write that was never supposed to matter, did.</strong> The bouncer checks CrowdSec's database on every protected request. On the original default, that database lived on networked shared storage, and under load its writes started to serialize. Once a single lookup crossed the bouncer's timeout, it failed closed, and because the bouncer is the same gate for every router behind it, that meant 403 on every protected route in the cluster, not only the slow ones. One real incident put it at roughly 1 in 20 external requests rejected over a thirty-minute window.</li>
+        <li><strong>The fix moves the hot path, not the gate.</strong> sksec now supports pinning that database to local disk on one chosen node, with write-ahead logging turned on only once it is safely off network storage (SQLite's own documentation is explicit that its shared-memory locking is not reliable over a network filesystem). The decision data and bouncer registration survive a migration; nothing about the fail-closed behavior itself changes, it just stops tripping on ordinary load.</li>
+        <li><strong>An operator allowlist that actually covers every decision path.</strong> A local parser whitelist alone would stop a false local detection, but not a community blocklist entry or a manual ban. sksec syncs the same list into CrowdSec's own LAPI allowlist, so the operator's own ranges are protected against every decision source, not just the obvious one.</li>
+        <li><strong>The client address is derived, not trusted blindly.</strong> Behind a CDN or tunnel, the leftmost address in a forwarded-for header is whatever the client puts there. sksec's trusted-proxy configuration makes the bouncer walk that header from the right and stop at the first address it does not already trust, so a forged header in front cannot be used to dodge a ban.</li>
+        <li><strong>Visibility does not mean exposure.</strong> The optional dashboard (<code>sksec-web</code>, below) reads and shows the same alerts and decisions an operator would otherwise read through a command-line tool, but it sits behind the fleet's own single sign-on and starts read-only, so adding visibility never widens who can change what.</li>
+      </ol>
+    </section>
+
+    <section id="ai">
+      <h2><span class="n">§</span>Fighting AI-speed attacks</h2>
+      <p>The honest version of the pitch is not that sksec can tell an AI agent from a person. It cannot, and no network control honestly can. What changed is the speed and reach of what is on the other end of the connection, and that is the part a behavior-and-reputation-based gate was already built to answer.</p>
+      <div class="callout">
+        <h3><span class="tag-pill">real threat</span>Exploit chains weaponized in days, not months</h3>
+        <p>This month alone, two chained disclosures moved from public CVE to active in-the-wild exploitation fast enough that a fleet checking patch status by tag name, not by actually running the binary, would have missed it: a PHP runtime remote-code-execution chain (PHP2Shell) and a related chain against a popular media server (Plex2Shell). Automated scanners and agentic tooling can probe thousands of endpoints for a fresh exploit signature far faster than a human operator can patch everything by hand, and they do not get tired, take weekends, or stop at the first failed attempt.</p>
+        <ul>
+          <li><strong>Behavior beats identity.</strong> CrowdSec's scenarios score what a request sequence does (credential-stuffing patterns, known exploit paths, scanning behavior) against its parser and scenario collections, such as the hub's <code>crowdsecurity/http-cve</code> collection for known CVE exploitation signatures and <code>crowdsecurity/traefik</code> for the edge's own access logs. It does not need to know who, or what, is driving the request.</li>
+          <li><strong>Reputation is crowd-sourced, on purpose.</strong> An address burning through exploit attempts against one CrowdSec-protected site anywhere in the community blocklist can be a known-bad signal before it ever reaches a sksec-protected router, which matters most against tooling that fans a single exploit chain out across many targets at once.</li>
+          <li><strong>The gate sits in front of the app, every time.</strong> Because the bouncer middleware applies at the Traefik layer, a fresh exploit against an application sksec protects still has to clear CrowdSec's decision first, independent of whether that application has been patched yet.</li>
+          <li><strong>Patch status is checked by running the code, not trusting the tag.</strong> SKStacks' fleet vulnerability register and daily image monitor inventory every running service's actual pinned image, probe runtimes like PHP against a floor table seeded with fixes such as PHP2Shell's, and flag anything below it the same day, rather than waiting for someone to notice.</li>
+        </ul>
+      </div>
+      <p style="margin-top:1.2rem">What sksec does not claim: it is not "AI-proof," it does not block all automated traffic, and it does not replace patching. It is one honest layer: slow down and catch what behaves badly at the edge, keep the operator's own addresses safe from false positives, and keep the admin tools that manage all of it behind single sign-on.</p>
+    </section>
+
+    <section id="web">
+      <h2><span class="n">§</span>sksec-web: seeing the gate, without widening it</h2>
+      <p>The optional <code class="mono">sksec-web</code> role adds <a href="https://github.com/TheDuffman85/crowdsec-web-ui" target="_blank" rel="noopener">crowdsec-web-ui</a>, a browser dashboard for the cluster's existing CrowdSec instance: investigate alerts, review decisions, watch runtime metrics, without SSHing into a node and running <code>cscli</code> by hand. It deploys after <code>core/sksec</code> and talks to that stack's own LAPI; it ships no CrowdSec engine or bouncer of its own.</p>
+      <table class="spec">
+        <tr><th>Property</th><th>Detail</th></tr>
+        <tr><td><strong>Credential</strong></td><td>Its own registered CrowdSec machine account, separate from the Traefik bouncer's key. Rotating one never touches the other.</td></tr>
+        <tr><td><strong>Default access</strong></td><td>Read-only at two independent layers: the dashboard's own read-only setting, and CrowdSec's own server-side rule on which machine accounts may delete a decision. Deleting is an explicit, separate, manual opt-in.</td></tr>
+        <tr><td><strong>Sign-in</strong></td><td>Authentik forward auth (SSO) in front by default, the same double-gate pattern used for every other admin-grade tool in the stack. A no-SSO mode exists only behind an explicit, named risk flag.</td></tr>
+        <tr><td><strong>Portal visibility</strong></td><td>Its tile is bound to the instance's admin group, not every signed-in user, the same convention the fleet already uses for its other admin dashboards.</td></tr>
+      </table>
+    </section>
+
+    <section id="flow">
+      <h2><span class="n">§</span>How sksec fits the security stack</h2>
+      <p>sksec is one layer in a stack built so no single piece has to be perfect on its own.</p>
+      <div class="flow">request
+  ->  skfenceha (Traefik HA edge: certs, routing, the worker tier that takes every hit)
+  ->  sksec crowdsec-bouncer@file  (fail-closed forwardAuth: behavior + reputation decision)
+  ->  sksso (Authentik SSO)  for admin tools, including sksec-web itself
+  ->  the application
+
+in parallel:
+  fleet vulnerability register + daily image monitor
+    -> inventories every running image, probes real runtime versions,
+       flags anything below a patched floor the same day it is found
+
+release discipline:
+  new sksec / sksec-web capability -> proven on a disposable lab cluster (skstack06)
+    -> only then considered part of a release</div>
+      <div class="grid" style="margin-top:1.4rem">
+        <div class="card"><h3>skfenceha</h3><p>The HA Traefik edge that terminates every request. sksec's bouncer is a middleware on skfenceha's routers, not a separate network hop.</p></div>
+        <div class="card"><h3>sksso</h3><p>Authentik-based single sign-on. Gates every admin-grade tool in the stack, sksec-web included, with the same double-gate pattern.</p></div>
+        <div class="card"><h3>Vulnerability register + image monitor</h3><p>Daily, unattended inventory of every running service's real pinned image and runtime version, cross-referenced against a tracked CVE register, flagging what is unreviewed instead of silently dropping it.</p></div>
+        <div class="card"><h3>skstack06 lab gate</h3><p>New sksec and sksec-web capability is proven end to end on a disposable test cluster before it ships, the same release discipline the rest of the framework's services use.</p></div>
+      </div>
+    </section>
+
+    <section id="ops">
+      <h2>Deployment</h2>
+      <p>sksec deploys through a standard Ansible playbook per environment (dev, staging, prod), every setting coming from a per-environment vault file, never hardcoded. The bouncer fails closed, so the framework's own README walks through activation order: set the operator allowlist first, deploy, confirm log acquisition and a test ban, canary one low-value router, then widen.</p>
+      <div class="cta">
+        <a class="btn" href="https://github.com/smilinTux/skstacks/blob/main/v1/ansible/core/sksec/README.md" target="_blank" rel="noopener">Read the sksec README</a>
+        <a class="btn" href="https://github.com/smilinTux/skstacks/pull/226" target="_blank" rel="noopener">See the sksec-web pull request</a>
+        <a class="btn bl" href="https://github.com/smilinTux/skstacks" target="_blank" rel="noopener">Explore SKStacks</a>
+      </div>
+    </section>
+
+    <section id="family">
+      <h2>Part of the ecosystem</h2>
+      <p>sksec guards the gate every other sovereign service sits behind. <a href="https://skhub.skworld.io" target="_blank" rel="noopener">skhub</a> holds the files, <a href="https://skwrit.skworld.io" target="_blank" rel="noopener">skwrit</a> publishes the paperwork, and every one of them routes through the same Traefik edge sksec protects. All part of <a href="https://skworld.io" target="_blank" rel="noopener">SKWorld</a>, the sovereign AI ecosystem where you own the whole stack, from silicon to soul.</p>
+      <div class="cta">
+        <a class="btn bl" href="https://skworld.io" target="_blank" rel="noopener">🐧 Explore SKWorld</a>
+        <a class="btn bl" href="https://skhub.skworld.io" target="_blank" rel="noopener">🗂️ Meet skhub</a>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div class="tag" style="font-size:1.05rem">CrowdSec at the edge, before anything reaches your apps.</div>
+      <div class="foot-links">
+        <a href="https://skworld.io" target="_blank" rel="noopener">SKWorld</a>
+        <a href="https://skstacks.skworld.io" target="_blank" rel="noopener">SKStacks</a>
+        <a href="https://skgateway.skworld.io" target="_blank" rel="noopener">skgateway</a>
+        <a href="https://lumina.skworld.io" target="_blank" rel="noopener">Lumina</a>
+        <a href="https://atlas.skworld.io" target="_blank" rel="noopener">Atlas</a>
+        <a href="https://skhub.skworld.io" target="_blank" rel="noopener">skhub</a>
+      </div>
+      <p class="mono" style="margin-top:.6rem">part of the SKWorld sovereign AI ecosystem 🐧 · built by <a href="https://github.com/smilinTux" target="_blank" rel="noopener">smilinTux</a> · <a href="https://github.com/smilinTux/sksec-skworld-io/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></p>
+    </div>
+  </footer>
+</body>
+</html>

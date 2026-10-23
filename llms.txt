@@ -1,0 +1,35 @@
+# sksec
+
+> CrowdSec at the edge, before anything reaches your apps.
+
+sksec is SKWorld's edge security layer, deployed as the `core/sksec` role inside SKStacks, the
+Ansible plus Docker Swarm sovereign infrastructure framework used across the SKWorld fleet. It
+runs CrowdSec (behavioral intrusion detection plus a crowd-sourced reputation feed) in front of
+every service behind the fleet's Traefik edge, with a Traefik forwardAuth bouncer that fails
+closed: if CrowdSec cannot be reached, the request is blocked rather than let through. It ships
+with an operator allowlist (own ranges never banned, enforced both at the local parser and at
+CrowdSec's own LAPI, so a community or manual ban can never catch an operator's own address),
+bouncer replicas for high availability, and a fix that moves CrowdSec's hot-path database off
+networked storage onto local disk so a slow lookup can no longer turn into a fail-closed outage
+across every protected route. A companion optional role, `sksec-web`, adds a browser dashboard
+for investigating alerts and decisions, with its own CrowdSec machine credential (never the
+bouncer's own key), read-only by default, and gated behind the fleet's Authentik single sign-on
+the same way every other admin-grade tool in the stack is.
+
+sksec does not try to tell whether a request came from a human or an AI agent, and it does not
+claim to. It blocks on behavior and reputation, which is exactly why it still works when the
+thing making the request got faster: credential stuffing, exploit chains weaponized within days
+of public disclosure, and scanners running at machine speed all look like what they are to a
+system that is watching behavior, not asking who is driving.
+
+## Links
+
+- [Live site](https://sksec.skworld.io)
+
+## About smilinTux
+
+sksec is part of the **smilinTux sovereign AI ecosystem**, a suite of open-source tools built by
+its creators to give humans and AI agents genuine, authentic infrastructure they can own and
+trust. No corporate clouds, no black-box SaaS middlemen. MIT License.
+
+Other ecosystem projects: [SKWorld](https://skworld.io), [SKStacks](https://skstacks.skworld.io), [skgateway](https://skgateway.skworld.io), [Lumina](https://lumina.skworld.io), [Atlas](https://atlas.skworld.io), [skhub](https://skhub.skworld.io), [skwrit](https://skwrit.skworld.io)
