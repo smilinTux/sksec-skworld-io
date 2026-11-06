@@ -84,6 +84,11 @@
     .callout ul{margin:.6rem 0 0 1.1rem;color:var(--muted)}
     .callout li{margin-bottom:.5rem}
     .callout code{color:var(--cyan)}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.1rem;margin-top:1rem}
+    .shot{border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02);padding:1.4rem 1.2rem;display:flex;flex-direction:column;gap:.6rem}
+    .shot figcaption{font-size:.92rem;color:var(--muted)}
+    .shot figcaption a{color:var(--red)}
+    .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:.22rem .65rem;margin-right:.5rem;vertical-align:middle;color:var(--cyan);background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.3)}
     footer{text-align:center;padding:3rem 0 2.5rem;color:rgba(255,255,255,.4);border-top:1px solid rgba(255,255,255,.06);margin-top:1rem}
     footer .mono{font-size:.82rem}
     .foot-links{display:flex;gap:1.4rem;flex-wrap:wrap;justify-content:center;margin:1.2rem 0;font-size:.85rem}
@@ -100,6 +105,7 @@
         <a href="#what">What it is</a>
         <a href="#ai">Fighting AI-speed attacks</a>
         <a href="#web">sksec-web</a>
+        <a href="#architecture">Architecture</a>
         <a href="https://github.com/smilinTux/skstacks/blob/main/v1/ansible/core/sksec/README.md" target="_blank" rel="noopener">Source</a>
         <a href="https://skworld.io" target="_blank" rel="noopener">🐧 SKWorld</a>
       </div>
@@ -118,6 +124,7 @@
         <a class="badge" href="#why">🔒 Fail-closed by design</a>
         <a class="badge" href="#ai">🤖 Fighting AI-speed attacks</a>
         <a class="badge" href="#web">🖥️ sksec-web</a>
+        <a class="badge" href="#architecture">🗺️ Architecture</a>
       </div>
     </div>
   </header>
@@ -199,6 +206,17 @@ release discipline:
         <div class="card"><h3>Vulnerability register + image monitor</h3><p>Daily, unattended inventory of every running service's real pinned image and runtime version, cross-referenced against a tracked CVE register, flagging what is unreviewed instead of silently dropping it.</p></div>
         <div class="card"><h3>skstack06 lab gate</h3><p>New sksec and sksec-web capability is proven end to end on a disposable test cluster before it ships, the same release discipline the rest of the framework's services use.</p></div>
       </div>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="n">§</span>Architecture: the gate, explorable</h2>
+      <p>The component map above is a static read. The diagram below is the same shape (bouncer, CrowdSec engine, the community blocklist feed, protected services, and the optional SSO-gated sksec-web dashboard) as a standalone, self-contained HTML page: explorable, with motion, and a dark/light toggle. It opens in a new tab.</p>
+      <div class="gallery">
+        <figure class="shot">
+          <figcaption><span class="pill">Interactive</span>Component map, with the fail-closed path and the SSO-gated admin surface drawn as trust boundaries. <a href="diagrams/sksec.architecture.html" target="_blank" rel="noopener">Open the interactive version ↗</a></figcaption>
+        </figure>
+      </div>
+      <p style="margin-top:1.2rem">The diagram's JSON source lives at <code class="mono">diagrams/sksec.architecture.json</code> in this repository, and is derived from, and must never contradict, the <a href="https://github.com/smilinTux/skstacks/blob/main/v1/ansible/core/sksec/README.md" target="_blank" rel="noopener">core/sksec README</a> and the <a href="https://github.com/smilinTux/skstacks/pull/226" target="_blank" rel="noopener">sksec-web pull request</a> it is grounded in.</p>
     </section>
 
     <section id="ops">

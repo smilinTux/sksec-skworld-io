@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "sksec Architecture",
+    "subtitle": "CrowdSec behavioral detection plus a fail-closed Traefik bouncer, with the optional SSO-gated sksec-web dashboard",
+    "output": "sksec.architecture.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    { "id": "incoming_traffic", "type": "external", "label": "Incoming Traffic", "sublabel": "public internet, via example.test", "pos": [40, 220], "size": [180, 64] },
+    { "id": "traefik_bouncer", "type": "security", "label": "Traefik forwardAuth Bouncer", "sublabel": "fails closed: no LAPI answer = 403", "pos": [300, 220], "size": [200, 64] },
+    { "id": "crowdsec_engine", "type": "security", "label": "CrowdSec Engine (LAPI)", "sublabel": "behavioral detection, operator allowlist", "pos": [600, 220], "size": [220, 64] },
+    { "id": "crowdsec_capi", "type": "external", "label": "CrowdSec Community Blocklist (CAPI)", "sublabel": "crowd-sourced reputation feed", "pos": [600, 40], "size": [240, 64] },
+    { "id": "protected_services", "type": "backend", "label": "Protected Services", "sublabel": "every router behind the Traefik edge", "pos": [900, 220], "size": [200, 64] },
+    { "id": "sksec_web", "type": "frontend", "label": "sksec-web Dashboard", "sublabel": "optional, read-only by default", "pos": [600, 400], "size": [220, 64] },
+    { "id": "sksso", "type": "security", "label": "sksso (Authentik SSO)", "sublabel": "forwardAuth gate for admin tools", "pos": [900, 400], "size": [200, 64] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "sksec stack (core/sksec)", "wraps": ["traefik_bouncer", "crowdsec_engine"] },
+    { "kind": "security-group", "label": "SSO-gated admin surface", "wraps": ["sksec_web", "sksso"] }
+  ],
+  "connections": [
+    { "id": "traffic-to-bouncer", "from": "incoming_traffic", "to": "traefik_bouncer", "label": "HTTPS request", "variant": "default" },
+    { "id": "bouncer-to-engine", "from": "traefik_bouncer", "to": "crowdsec_engine", "label": "forwardAuth decision check", "variant": "security" },
+    { "id": "engine-to-capi", "from": "crowdsec_engine", "to": "crowdsec_capi", "label": "crowd-sourced reputation sync", "variant": "dashed" },
+    { "id": "bouncer-to-services", "from": "traefik_bouncer", "to": "protected_services", "label": "allow (pass through)", "variant": "default" },
+    { "id": "engine-to-web", "from": "crowdsec_engine", "to": "sksec_web", "label": "alerts and decisions (LAPI)", "variant": "default" },
+    { "id": "sso-to-web", "from": "sksso", "to": "sksec_web", "label": "forwardAuth SSO gate", "variant": "security" }
+  ],
+  "cards": [
+    { "dot": "rose", "title": "Fail-closed by design", "items": ["No LAPI answer from the bouncer means every protected request gets 403, not a quiet pass-through", "The operator allowlist is enforced at both the local parser and CrowdSec's own LAPI, so a community or manual ban can never catch an operator's own address", "sksec-web is read-only by default and sits behind the same SSO forwardAuth gate as every other admin-grade tool in the stack"] }
+  ]
+}
